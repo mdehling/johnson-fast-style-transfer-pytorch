@@ -1,0 +1,21 @@
+{
+	"name": "Training",
+	"image": "docker.io/mdehling/msu-extra:2-focal",
+	"hostRequirements": {
+		"cpus": 4,
+		"memory": "32gb",
+		"gpu": true,
+		"storage": "64gb"
+	},
+	"runArgs": [
+		"--shm-size=1g"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter"
+			]
+		}
+	}
+}
