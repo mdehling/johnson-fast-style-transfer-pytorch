@@ -3,7 +3,6 @@
 import torch
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from torchvision.transforms.functional import to_tensor
 
 from omegaconf import OmegaConf
 import hydra
@@ -13,10 +12,11 @@ from pathlib import Path
 from PIL import Image
 from tqdm import tqdm
 
-from config import Config
-from datasets import COCO2014
-from models import JohnsonStyleTransfer
-from losses import GatysLoss
+from nst.config import Config
+from nst.datasets import COCO2014
+from nst.models import JohnsonStyleTransfer
+from nst.losses import GatysLoss
+from nst.io import load_image, save_image
 
 
 @hydra.main(version_base='1.2', config_name='config')
@@ -35,10 +35,9 @@ def main(cfg: Config):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    style_image = Image.open(input_dir/cfg.style_image)
-    style_image = to_tensor(style_image)
-    style_image = torch.unsqueeze(style_image, 0)
-    style_image = style_image.to(device=device)
+    style_image = load_image(
+        input_dir / cfg.style_image_dir / cfg.style_image
+    ).to(device=device)
 
     model = JohnsonStyleTransfer(
             filters=cfg.network.filters,
@@ -72,9 +71,16 @@ def main(cfg: Config):
     model.eval().to(device='cpu')
     torch.save(model, output_dir/cfg.save_model)
 
-    if not OmegaConf.is_missing(cfg, 'save_optimizer'):
-        torch.save(optimizer, output_dir/cfg.save_optimizer)
+    if not OmegaConf.is_missing(cfg, 'save_state'):
+        torch.save(optimizer.state_dict, output_dir/cfg.save_state)
 
+    for filepath in (input_dir/cfg.content_image_dir).iterdir():
+        try:
+            content_image = load_image(filepath)
+            pastiche_image = model(content_image)
+            save_image(output_dir/filepath.name, pastiche_image)
+        except:
+            pass
 
 if __name__ == '__main__':
     main()

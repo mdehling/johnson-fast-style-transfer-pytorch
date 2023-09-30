@@ -42,9 +42,12 @@ class TrainingConfig:
 
 @dataclass
 class Config:
+    content_image_dir: str = 'img/content'
+    style_image_dir: str = 'img/style'
     style_image: str = MISSING
+
     save_model: str = 'model.pth'
-    save_optimizer: str = MISSING
+    save_state: str = 'state.pth'
 
     network: NetworkConfig = field(default_factory=NetworkConfig)
     training: TrainingConfig = field(default_factory=TrainingConfig)

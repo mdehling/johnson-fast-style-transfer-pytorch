@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
-from pathlib import Path
 
 import torch
-import torchvision.transforms as transforms
-from PIL import Image
+
+from nst.io import load_image, save_image
 
 
 def parse_args():
@@ -31,12 +30,6 @@ if __name__ == '__main__':
 
     model = torch.load(args.model).eval().to(device='cpu')
 
-    content_image = Image.open(args.content_image)
-    content_image = transforms.functional.to_tensor(content_image)
-    content_image = torch.unsqueeze(content_image, 0)
-
+    content_image = load_image(args.content_image)
     pastiche_image = model(content_image)
-
-    pastiche_image = torch.squeeze(pastiche_image, 0)
-    pastiche_image = transforms.functional.to_pil_image(pastiche_image)
-    pastiche_image.save(args.pastiche_image)
+    save_image(args.pastiche_image, pastiche_image)
