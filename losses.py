@@ -5,6 +5,12 @@ from torchvision.models.feature_extraction import create_feature_extractor
 from torchvision.transforms import Normalize
 
 
+def total_variation(x):
+    tv_h = (x[...,1:,:] - x[...,:-1,:]).abs().sum()
+    tv_w = (x[...,:,1:] - x[...,:,:-1]).abs().sum()
+    return tv_h + tv_w
+
+
 def avg_gram(x):
     return torch.einsum('brij,bsij->brs', x, x) / (x.shape[2]*x.shape[3])
 
@@ -15,10 +21,11 @@ class GatysLoss:
         content_image=None,
         style_image=None,
         content_weight=1.0,
-        style_weight=1e-4,
+        style_weight=0.3,
+        var_weight=1e-5,
         device=None
         ):
-        """Gatys Content & Style Loss."""
+        """Gatys Loss."""
 
         self.content_layers = ['features.15']
         self.style_layers = [
@@ -57,6 +64,7 @@ class GatysLoss:
 
         self.content_weight = content_weight
         self.style_weight = style_weight
+        self.var_weight = var_weight
 
     def __call__(self, pastiche_image, content_image=None, style_image=None):
         pastiche_image = self.normalize(pastiche_image)
@@ -100,5 +108,11 @@ class GatysLoss:
             for layer in self.style_layers
         ])
 
-        return self.content_weight * content_loss \
-                + self.style_weight * style_loss
+        var_loss = total_variation(pastiche_image)
+
+        return (
+            self.content_weight * content_loss
+            + self.style_weight * style_loss
+            + self.var_weight * var_loss
+        )
+
