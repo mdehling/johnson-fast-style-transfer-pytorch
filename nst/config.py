@@ -29,7 +29,7 @@ class LossConfig:
 
 @dataclass
 class OptimizerConfig:
-    learning_rate: float = 1e-3
+    learning_rate: float = 1e-4
 
 
 @dataclass
