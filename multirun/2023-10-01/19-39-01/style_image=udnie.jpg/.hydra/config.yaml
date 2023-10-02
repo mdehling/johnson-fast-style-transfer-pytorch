@@ -1,0 +1,24 @@
+content_image_dir: img/content
+style_image_dir: img/style
+style_image: udnie.jpg
+save_model: model.pth
+save_state: state.pth
+network:
+  filters:
+  - 32
+  - 64
+  - 128
+  normalization: instance
+  upsampling: conv
+training:
+  data:
+    path: coco2014
+    batch_size: 32
+    num_workers: 6
+  loss:
+    content_weight: 1.0
+    style_weight: 0.3
+    var_weight: 1.0e-05
+  optimizer:
+    learning_rate: 0.0001
+  epochs: 2
