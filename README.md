@@ -24,3 +24,9 @@ images, run the following command:
     ./train.py --multirun style_image=bathing.jpg,candy.jpg,cubism.jpg,delaunay.jpg,scream.jpg,starry-night.jpg,udnie.jpg
 
 The directory `multirun` contains the results of this exact command.
+
+Samples
+-------
+![karya-udnie](multirun/2023-10-01/19-39-01/style_image=udnie.jpg/karya.jpg)
+![sunflower-candy](multirun/2023-10-01/19-39-01/style_image=candy.jpg/sunflower.jpg)
+![bochum-delaunay](multirun/2023-10-01/19-39-01/style_image=delaunay.jpg/bochum.jpg)
