@@ -40,7 +40,7 @@ def main(cfg: Config):
     ).to(device=device)
 
     model = JohnsonStyleTransfer(
-            filters=cfg.network.filters,
+        filters=cfg.network.filters,
         normalization=cfg.network.normalization
     ).train().to(device=device)
 
