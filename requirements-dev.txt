@@ -3,3 +3,4 @@ torchvision
 torchmetrics
 tqdm
 hydra-core
+requests
